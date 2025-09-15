@@ -1,0 +1,21 @@
+[project]
+name = "vista"
+version = "0.1.0"
+description = "Data Quality Reporting Tool"
+authors = [
+    { name = "Navaneethan Ghanti", email = "navaneethan.ghanti@gmail.com" }
+]
+readme = "readme.md"
+requires-python = ">=3.8"
+dependencies = [
+    "polars",
+    "jinja2",
+    "pdfkit",
+    "reportlab"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+vista = "vista.main:main"
