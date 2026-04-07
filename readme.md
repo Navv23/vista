@@ -2,7 +2,12 @@
 
 ## Overview
 
+<img src="src/vista/data/vista_logo.png" alt="Vista logo" width="400"/>
+
 VISTA is a Python-based tool for automated data quality profiling and reporting. It analyzes tabular datasets (CSV, Parquet, JSON) and generates a comprehensive PDF report with metrics, insights, and visualizations.
+
+## Workflow
+![VISTA Architecture](src/vista/data/vista_workflow.png)
 
 ## Features (v1)
 - Fast data profiling using [Polars](https://www.pola.rs/)
@@ -14,7 +19,7 @@ VISTA is a Python-based tool for automated data quality profiling and reporting.
 ### Future Expansion (v1.1)
 - Generate statistical visualizations for numeric data.
 - Add more metrics such as: data freshness, cardinality, entropy and correlation metrics.
-- Shows data quality score accorss the data.
+- Shows data quality score across the data.
 - Make it as a versatile eda tool and monitoring tool
 
 ## Installation
