@@ -2,7 +2,7 @@
 
 ## Overview
 
-<img src="src/vista/data/vista_logo.png" alt="Vista logo" width="400"/>
+<img src="src/vista/data/vista_logo.png" alt="Vista logo" width="300"/>
 
 VISTA is a Python-based tool for automated data quality profiling and reporting. It analyzes tabular datasets (CSV, Parquet, JSON) and generates a comprehensive PDF report with metrics and insights.
 
