@@ -5,29 +5,50 @@ class FileReader:
     def __init__(self, file_path: str, file_type: str, read_options: Optional[Dict[str, Any]] = None):
         self.file_path = file_path
         self.file_type = file_type.lower()
+        self.schema = None
+        self.columns = None
+        self.width = None
+        self.height = None
         self.read_options = read_options if read_options is not None else {}
+    
+    def _get_dimensions(self, lazy_frame: pl.LazyFrame) -> tuple:
+        '''
+        Retrieve the dimensions (width and height) of the lazy frame.
+        '''
+        if self.width is None or self.height is None:
+            dimensions = lazy_frame.select(pl.len()).collect().item()
+            self.height = dimensions
+            self.width = len(lazy_frame.collect_schema().names())
+        return self.width, self.height
+    
+    def _get_columns(self, lazy_frame: pl.LazyFrame) -> list:
+        '''
+        Retrieve the column names for the lazy frame.
+        '''
+        if self.columns is None:
+            self.columns = lazy_frame.collect_schema().names()
+        return self.columns
+    
+    def _get_schema(self, lazy_frame: pl.LazyFrame) -> Dict[str, pl.DataType]:
+        '''
+        Retrieve the schema for the lazy frame.
+        '''
+        if self.schema is None:
+            self.schema = lazy_frame.collect_schema()
+        return self.schema
 
-    def read(self, lazy: bool = False) -> Union[pl.DataFrame, pl.LazyFrame]:
+    def scan_lazy(self) -> Union[pl.DataFrame, pl.LazyFrame]:
+        '''
+        Scans the lazy frame based on file type.
+        '''
         if self.file_type == 'csv':
-            if lazy:
-                return pl.scan_csv(self.file_path, **self.read_options)
-            else:
-                return pl.read_csv(self.file_path, **self.read_options)
+            lazy_frame =  pl.scan_csv(self.file_path, **self.read_options)
         elif self.file_type == 'parquet':
-            if lazy:
-                return pl.scan_parquet(self.file_path, **self.read_options)
-            else:
-                return pl.read_parquet(self.file_path, **self.read_options)
-        elif self.file_type == 'json':
-            if lazy:
-                raise NotImplementedError("Lazy reading is not supported for JSON files.")
-            else:
-                return pl.read_json(self.file_path, **self.read_options)
+            lazy_frame = pl.scan_parquet(self.file_path, **self.read_options)
         else:
             raise ValueError(f"Unsupported file type: {self.file_type}")
-
-    def read_in_batches(self, batch_size: int):
-        if self.file_type == 'csv':
-            return pl.read_csv_batched(self.file_path, **self.read_options)
-        else:
-            raise NotImplementedError(f"Batch reading is not supported for {self.file_type} files.")
+        
+        self._get_schema(lazy_frame=lazy_frame)
+        self._get_columns(lazy_frame=lazy_frame)
+        self._get_dimensions(lazy_frame=lazy_frame)
+        return lazy_frame
