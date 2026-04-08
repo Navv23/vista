@@ -76,7 +76,6 @@ class GenerateMetrics:
         '''
         Identifies outliers using the IQR method, minimizing data collection.
         '''
-        breakpoint()
         numeric_cols = [col for col, dtype in self.file_reader.schema.items() if dtype.is_numeric()]
         if not numeric_cols:
             return []
